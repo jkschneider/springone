@@ -1,0 +1,11 @@
+spring:
+  application.name: membership
+  profiles.active: ${NETFLIX_STACK:local}
+security.basic.enabled: false
+netflix:
+  appinfo.name: ${spring.application.name}
+  appinfo.region: ${EC2_REGION:us-west-1}
+  environment: ${NETFLIX_ENVIRONMENT:test}
+eureka.client.serviceUrl.defaultZone: http://${EC2_REGION:us-west-1}.discovery${NETFLIX_ENVIRONMENT:test}.netflix.net:7001/discovery/v2/
+server.port: 8080
+endpoints.health.sensitive: false
