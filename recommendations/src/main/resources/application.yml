@@ -6,6 +6,7 @@ netflix:
   appinfo.name: ${spring.application.name}
   appinfo.region: ${EC2_REGION:us-west-1}
   environment: ${NETFLIX_ENVIRONMENT:test}
-eureka.client.serviceUrl.defaultZone: http://${EC2_REGION:us-west-1}.discovery${NETFLIX_ENVIRONMENT:test}.netflix.net:7001/discovery/v2/
-server.port: 8080
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka/
+server.port: 8081
 endpoints.health.sensitive: false
+membership.ribbon.DeploymentContextBasedVipAddresses: membership
