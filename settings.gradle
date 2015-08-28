@@ -1,0 +1,3 @@
+rootProject.name = 'springone'
+include 'membership', 'recommendations'
+

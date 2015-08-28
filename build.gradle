@@ -1,0 +1,29 @@
+buildscript {
+    repositories { jcenter() }
+    dependencies { classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE' }
+}
+
+subprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.cloud:spring-cloud-netflix:1.1.0.BUILD-SNAPSHOT'
+        }
+    }
+
+    repositories {
+        jcenter()
+        maven { url 'http://repo.spring.io/snapshot' }
+    }
+
+    dependencies {
+        compile 'javax.inject:javax.inject:1'
+
+        compile 'org.springframework.boot:spring-boot-starter-web'
+        compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+        compile 'org.codehaus.groovy:groovy-all:latest.release'
+    }
+}
