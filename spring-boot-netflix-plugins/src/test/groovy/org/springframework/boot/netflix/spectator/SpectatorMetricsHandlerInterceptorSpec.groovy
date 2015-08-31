@@ -5,7 +5,6 @@ import com.netflix.spectator.api.Registry
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
 import org.springframework.boot.autoconfigure.test.ImportAutoConfiguration
-import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.test.annotation.DirtiesContext
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup
 
-@ContextConfiguration(classes = SpectatorTestConfig, loader = SpringApplicationContextLoader.class)
+@ContextConfiguration(classes = SpectatorTestConfig)
 @WebAppConfiguration
 @TestPropertySource(properties = 'spring.application.name=test')
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
