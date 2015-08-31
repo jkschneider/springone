@@ -24,13 +24,13 @@ class SpectatorMetricsHandlerInterceptor extends HandlerInterceptorAdapter {
     Registry registry
 
     @Override
-    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        RequestContextHolder.getRequestAttributes().setAttribute('requestStartTime', registry.clock().wallTime(), SCOPE_REQUEST)
+    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        RequestContextHolder.requestAttributes.setAttribute('requestStartTime', registry.clock().wallTime(), SCOPE_REQUEST)
         super.preHandle(request, response, handler)
     }
 
     @Override
-    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         RequestContextHolder.requestAttributes.setAttribute('exception', ex, SCOPE_REQUEST)
         def startTime = RequestContextHolder.getRequestAttributes().getAttribute('requestStartTime', SCOPE_REQUEST) as Long
         if (startTime)
@@ -49,7 +49,7 @@ class SpectatorMetricsHandlerInterceptor extends HandlerInterceptorAdapter {
             'uri', uri.empty ? 'root' : uri,
             'caller', callerHeader ? (request.getHeader(callerHeader) ?: 'unknown') : 'unknown',
             'exceptionType', request.getAttribute('exception')?.class?.simpleName ?: 'none',
-            'status', response.getStatus() as String
+            'status', response.status as String
         ).record(registry.clock().wallTime() - startTime, TimeUnit.MILLISECONDS)
     }
 }
