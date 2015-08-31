@@ -23,12 +23,11 @@ public class SpectatorMonitoringWebResourceInterceptor extends HandlerIntercepto
 	@Autowired
 	private Registry registry;
 	
-	@Value("spring.mvc.spectator.metricTemplate")
-	protected String METRIC_TEMPLATE ="REST.%s";
-	@Value("spring.mvc.spectator.callerHeader")
-	protected String CALLER_HEADER="x-netflix.client.appid";
-	@Value("spring.application.name")
-	protected String appName="application";
+	@Value("#{environment['spring.mvc.spectator.metricName']?:'REST.'+(environment['spring.application.name']?:'application')}")
+	protected String metricName ="REST.applicationasdf";
+	@Value("#{environment['spring.mvc.spectator.callerHeader']}")
+	protected String callerHeader="x-netflix.client.appid";
+
 	
 	
 	@Override
@@ -41,6 +40,7 @@ public class SpectatorMonitoringWebResourceInterceptor extends HandlerIntercepto
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 		RequestContextHolder.getRequestAttributes().setAttribute("exception", ex, RequestAttributes.SCOPE_REQUEST);
+		
 		Long startTime = (Long) RequestContextHolder.getRequestAttributes().getAttribute("requestStartTime", RequestAttributes.SCOPE_REQUEST);
 		if(startTime != null)
 		{
@@ -53,18 +53,14 @@ public class SpectatorMonitoringWebResourceInterceptor extends HandlerIntercepto
 		String url = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE)
 				.toString().substring(1).replaceAll("/", "_").replaceAll("[{}]", "-");
 		
-		registry.timer(formatMessage(request, response, handler),
+		registry.timer(this.metricName,
 				"method", request.getMethod(),
 				"url", url.isEmpty() ? "root" : url,
 				"handlerName", handler instanceof HandlerMethod ? ((HandlerMethod)handler).getMethod().getName() : "unknown",
-				"caller", request.getHeader(this.CALLER_HEADER) != null ? request.getHeader(this.CALLER_HEADER) : "unknown",
+				"caller", request.getHeader(this.callerHeader) != null ? request.getHeader(this.callerHeader) : "unknown",
 				"exceptionType", request.getAttribute("exception") != null ? request.getAttribute("exception").getClass().getSimpleName() : "none",
 				"status", Integer.toString(response.getStatus()))
 				.record(registry.clock().wallTime() - startTime, TimeUnit.MILLISECONDS);
-	}
-
-	protected String formatMessage(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		return String.format(METRIC_TEMPLATE, appName);
 	}
 	
 }
