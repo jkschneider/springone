@@ -1,4 +1,4 @@
 rootProject.name = 'springone'
 include 'membership', 'recommendations'
 include 'eureka'
-
+include 'spring-boot-netflix-plugins'

@@ -1,12 +1,17 @@
 buildscript {
     repositories { jcenter() }
-    dependencies { classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE' }
+    dependencies { 
+	classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE' 
+	classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
+    }
 }
 
 subprojects {
     apply plugin: 'groovy'
     apply plugin: 'io.spring.dependency-management'
-
+    apply plugin: 'optional-base'
+    targetCompatibility = '8'
+    sourceCompatibility = '8'
     dependencyManagement {
         imports {
             mavenBom 'org.springframework.cloud:spring-cloud-netflix:1.1.0.BUILD-SNAPSHOT'

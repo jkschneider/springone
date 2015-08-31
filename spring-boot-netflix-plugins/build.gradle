@@ -1,0 +1,15 @@
+apply plugin: 'java'
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+	
+	compile 'com.netflix.spectator:spectator-api:0.30.0', optional
+	
+	testCompile 'org.springframework:spring-test'
+	testCompile 'junit:junit'
+	testCompile 'org.mockito:mockito-core'
+	testCompile ("org.kubek2k:springockito-annotations:1.0.9") {
+		exclude(module:'mockito-all') //we want mockito-core
+	  }
+}
