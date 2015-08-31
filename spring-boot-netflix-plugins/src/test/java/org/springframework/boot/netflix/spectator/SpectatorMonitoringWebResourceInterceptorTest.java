@@ -46,7 +46,7 @@ import com.netflix.spectator.api.Registry;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={SpectatorMonitoringWebResourceInterceptorTestConfig.class}, loader = SpringockitoWebContextLoader.class)
 @WebAppConfiguration
-@TestPropertySource(properties={"spring.application.name=test"})
+@TestPropertySource(properties={"spring.application.name=test", "error.whitelabel.enabled=false"})
 public class SpectatorMonitoringWebResourceInterceptorTest {
 
 	@Autowired
@@ -70,7 +70,7 @@ public class SpectatorMonitoringWebResourceInterceptorTest {
 	@After
 	public void cleanup()
 	{
-		Mockito.reset(registry);
+		Mockito.reset(registry, interceptorSpy);
 	}
 	
 	@Test
@@ -108,17 +108,34 @@ public class SpectatorMonitoringWebResourceInterceptorTest {
 	}
 	
 	@Test
-	public void testMetricsGatheredOnException() throws Exception {
+	public void testMetricsGatheredOnHandledException() throws Exception {
 		mvc.perform(get("/test/some/error/10"))
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is4xxClientError());
 		
 		ArgumentCaptor<String> metricName = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<String> tags = ArgumentCaptor.forClass(String.class);
 		Mockito.verify(registry).timer(metricName.capture(), tags.capture());
 		assertEquals("REST.test", metricName.getValue());
 		assertThat(tags.getAllValues(), containsInAnyOrder(
-				"method", "GET", "url", "test_some_error_-id-", "handlerName", "testSomeError",
-				"caller", "unknown", "exceptionType", "none", "status", "500"
+				"method", "GET", "url", "test_some_error_-id-", "handlerName", "testSomeHandledError",
+				"caller", "unknown", "exceptionType", "none", "status", "422"
+				));
+	}
+	
+	@Test
+	public void testMetricsGatheredOnUnhandledException() throws Exception {
+		try {
+			mvc.perform(get("/test/some/unhandledError/10"))
+			.andExpect(status().is5xxServerError());
+		} catch(Exception e) {};
+		
+		ArgumentCaptor<String> metricName = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<String> tags = ArgumentCaptor.forClass(String.class);
+		Mockito.verify(registry).timer(metricName.capture(), tags.capture());
+		assertEquals("REST.test", metricName.getValue());
+		assertThat(tags.getAllValues(), containsInAnyOrder(
+				"method", "GET", "url", "test_some_unhandledError_-id-", "handlerName", "testSomeUnhandledError",
+				"caller", "unknown", "exceptionType", "UnhandledException", "status", "200"
 				));
 	}
 }
@@ -154,15 +171,35 @@ class SpectatorMonitoringWebResourceInterceptorTestController
 	
 	@RequestMapping("/test/some/error/{id}")
 	@ResponseBody
-	public String testSomeError(@PathVariable Long id)
+	public String testSomeHandledError(@PathVariable Long id)
 	{
-		throw new RuntimeException("Boom!");
+		throw new HandledException("Boom!");
 	}
 	
-	@ExceptionHandler(value = {RuntimeException.class})
-	@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
+	@RequestMapping("/test/some/unhandledError/{id}")
+	@ResponseBody
+	public String testSomeUnhandledError(@PathVariable Long id)
+	{
+		throw new UnhandledException("Boom!");
+	}
+	
+	@ExceptionHandler(value = {HandledException.class})
+	@ResponseStatus(code=HttpStatus.UNPROCESSABLE_ENTITY)
     public ModelAndView defaultErrorHandler(HttpServletRequest request, Exception e) {
         ModelAndView mav = new ModelAndView("error");
         return mav;
     }
 }
+
+class HandledException extends RuntimeException {
+	public HandledException(String msg) {
+		super(msg);
+	}
+}
+
+class UnhandledException extends RuntimeException {
+	public UnhandledException(String msg) {
+		super(msg);
+	}
+}
+
