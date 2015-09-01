@@ -1,5 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.springframework.boot.netflix.spectator.SpectatorMvcMonitoringAutoConfiguration
+org.springframework.boot.netflix.spectator.SpectatorRestTemplateInterceptorAutoConfig
 org.springframework.boot.netflix.eureka.EurekaApplicationEventAutoConfiguration
 org.springframework.boot.netflix.eureka.EurekaHealthNotifierAutoConfiguration
 org.springframework.boot.netflix.atlas.AtlasAutoConfiguration
