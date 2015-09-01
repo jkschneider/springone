@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+	compile 'org.springframework.cloud:spring-cloud-starter-eureka-server', optional
 	compile 'com.netflix.spectator:spectator-api:0.30.0', optional
 
 	testCompile 'org.springframework:spring-test'
