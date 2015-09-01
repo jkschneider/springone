@@ -6,11 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import javax.inject.Named
 import javax.validation.constraints.NotNull
 
-/**
- * Periodically polls registered Servo monitors
- */
-
-@Named
 @ConfigurationProperties(prefix='netflix.atlas')
 class SpringAtlasConfiguration implements ServoAtlasConfig {
     @NotNull String uri
