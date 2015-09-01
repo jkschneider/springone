@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST
 
 class SpectatorMetricsHandlerInterceptor extends HandlerInterceptorAdapter {
-    @Value('${spring.application.name:test}')
+    @Value('${netflix.spectator:rest}')
     String metricName
 
     @Value('${netflix.spectator.callerHeader:#{null}}')
