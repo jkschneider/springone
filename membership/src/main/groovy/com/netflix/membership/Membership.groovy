@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableSpectator
-@EnableAtlas
+//@EnableSpectator
+//@EnableAtlas
+@ImportAutoConfiguration([SpectatorAutoConfiguration, AtlasAutoConfiguration])
 class Membership {
     static void main(String[] args) {
         new SpringApplicationBuilder(Membership).web(true).run(args)
