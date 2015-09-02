@@ -1,8 +1,8 @@
 buildscript {
     repositories { jcenter() }
     dependencies { 
-	classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE' 
-	classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
+        classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
     }
 }
 
@@ -27,9 +27,5 @@ subprojects {
 
     configurations.all {
         exclude module: 'groovy-all'
-    }
-
-    dependencies {
-        compile 'org.codehaus.groovy:groovy:latest.release'
     }
 }
