@@ -3,15 +3,14 @@ package org.springframework.boot.netflix.atlas
 import com.netflix.servo.publish.atlas.ServoAtlasConfig
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-import javax.inject.Named
 import javax.validation.constraints.NotNull
 
 @ConfigurationProperties(prefix='netflix.atlas')
 class SpringAtlasConfiguration implements ServoAtlasConfig {
     @NotNull String uri
-    Integer pushQueueSize = 100
+    Integer pushQueueSize = 1000
     boolean enabled = true
-    Integer batchSize = 1000
+    Integer batchSize = 10000
 
     @Override
     String getAtlasUri() {

@@ -1,8 +1,5 @@
 package org.springframework.boot.netflix.spectator
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*
 
@@ -57,7 +54,7 @@ class SpectatorRestTemplateLoggingSpec extends Specification {
 }
 
 @Configuration
-@ImportAutoConfiguration([SpectatorRestTemplateInterceptorAutoConfig, PropertyPlaceholderAutoConfiguration, AopAutoConfiguration])
+@ImportAutoConfiguration([SpectatorRestTemplateInterceptorAutoConfiguration, PropertyPlaceholderAutoConfiguration, AopAutoConfiguration])
 class SpectatorRestTemplateTestConfig {
 	
 	@Bean

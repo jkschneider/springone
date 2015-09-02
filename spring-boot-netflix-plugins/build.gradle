@@ -12,4 +12,5 @@ dependencies {
 
 	testCompile 'org.springframework:spring-test'
     testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+    testCompile 'org.littleshoot:littleproxy:latest.release'
 }

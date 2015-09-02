@@ -4,7 +4,6 @@ import com.netflix.servo.monitor.Monitor
 import com.netflix.servo.publish.BasicMetricFilter
 import com.netflix.servo.publish.MetricPoller
 import com.netflix.servo.publish.atlas.AtlasMetricObserver
-import com.netflix.spectator.servo.ServoRegistry
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
@@ -18,12 +17,12 @@ import org.springframework.scheduling.annotation.Scheduled
  */
 @Configuration
 @ConditionalOnClass(AtlasMetricObserver)
-@ConditionalOnBean([Monitor])
+@ConditionalOnBean(Monitor)
 @EnableScheduling
 @Import(AtlasObserverConfiguration)
 class AtlasAutoConfiguration {
     @Autowired
-    ServoRegistry registry
+    Monitor monitor
 
     @Autowired
     MetricPoller poller
@@ -36,4 +35,3 @@ class AtlasAutoConfiguration {
         observer.update(poller.poll(BasicMetricFilter.MATCH_ALL))
     }
 }
-

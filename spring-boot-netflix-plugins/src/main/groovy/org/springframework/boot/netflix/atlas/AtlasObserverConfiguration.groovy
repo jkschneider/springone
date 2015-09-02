@@ -42,13 +42,13 @@ class AtlasObserverConfiguration {
                     def monitors = ((CompositeMonitor) monitor).monitors
                     monitors.inject(new ArrayList<Metric>(monitors.size())) { ArrayList<Metric> metrics, monitor ->
                         def v = monitor.value
-                        if(v) metrics.add(new Metric(monitor.config, System.currentTimeMillis(), v))
+                        if(v != null) metrics.add(new Metric(monitor.config, System.currentTimeMillis(), v))
                         metrics
                     }
                 }
                 else {
                     def v = monitor.value
-                    v ? [new Metric(monitor.config, System.currentTimeMillis(), v)] : []
+                    v != null ? [new Metric(monitor.config, System.currentTimeMillis(), v)] : []
                 }
             }
         }

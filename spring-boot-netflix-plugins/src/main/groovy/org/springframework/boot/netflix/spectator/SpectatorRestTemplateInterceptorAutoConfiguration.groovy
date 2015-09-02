@@ -11,7 +11,7 @@ import com.netflix.spectator.api.Registry
 
 @ConditionalOnBean([RestTemplate, Registry])
 @AutoConfigureAfter(AopAutoConfiguration)
-class SpectatorRestTemplateInterceptorAutoConfig {
+class SpectatorRestTemplateInterceptorAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnBean(CglibAutoProxyConfiguration)
