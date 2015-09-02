@@ -1,11 +1,12 @@
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
 	compile 'org.springframework.boot:spring-boot-starter-aop'
 
-	compile 'org.springframework.cloud:spring-cloud-starter-eureka-server', optional
+	compile 'org.springframework.cloud:spring-cloud-starter-eureka', optional
 	compile 'com.netflix.spectator:spectator-api:0.30.0', optional
     compile 'com.netflix.spectator:spectator-reg-servo:0.30.0', optional
     compile 'com.netflix.servo:servo-atlas:0.11.2', optional
@@ -14,4 +15,20 @@ dependencies {
     testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
     testCompile 'org.littleshoot:littleproxy:latest.release'
     testCompile 'org.codehaus.groovy:groovy:latest.release'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
 }

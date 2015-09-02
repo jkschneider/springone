@@ -17,7 +17,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 @Configuration
 @ConditionalOnClass(AtlasMetricObserver.class)
-@ConditionalOnBean(Monitor.class)
+//@ConditionalOnBean(Monitor.class)
 @EnableScheduling
 @Import(AtlasObserverConfiguration.class)
 public class AtlasAutoConfiguration {

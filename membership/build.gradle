@@ -3,4 +3,11 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.cloud:spring-cloud-starter-eureka'
     compile 'org.codehaus.groovy:groovy:latest.release'
+
+    compile project(':spring-cloud-netflix-plugins')
+//    compile 'com.netflix.spring:spring-cloud-netflix-plugins:latest.integration'
+
+    compile 'com.netflix.spectator:spectator-api:0.30.0'
+    compile 'com.netflix.spectator:spectator-reg-servo:0.30.0'
+    compile 'com.netflix.servo:servo-atlas:0.11.2'
 }

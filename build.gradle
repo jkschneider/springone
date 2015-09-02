@@ -2,7 +2,7 @@ buildscript {
     repositories { jcenter() }
     dependencies { 
         classpath 'io.spring.gradle:dependency-management-plugin:0.5.2.RELEASE'
-        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:latest.release'
     }
 }
 
@@ -10,6 +10,9 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'optional-base'
+
+    group = 'com.netflix.spring'
+    version = '0.0.1-SNAPSHOT'
 
     targetCompatibility = '1.8'
     sourceCompatibility = '1.8'
