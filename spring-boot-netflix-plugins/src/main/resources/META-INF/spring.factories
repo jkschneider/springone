@@ -1,4 +1,4 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.springframework.cloud.netflix.eureka.EnableEurekaClient=\
 org.springframework.boot.netflix.eureka.EurekaApplicationEventAutoConfiguration
 org.springframework.boot.netflix.eureka.EurekaHealthNotifierAutoConfiguration
 
