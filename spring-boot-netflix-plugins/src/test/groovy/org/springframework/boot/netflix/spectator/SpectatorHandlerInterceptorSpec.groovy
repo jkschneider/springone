@@ -40,7 +40,7 @@ class SpectatorMetricsHandlerInterceptorSpec extends Specification {
 
     def 'auto-configuration wires the metrics interceptor'() {
         expect:
-        !webAppContext.getBeansOfType(SpectatorMetricsHandlerInterceptor).isEmpty()
+        !webAppContext.getBeansOfType(SpectatorHandlerInterceptor).isEmpty()
     }
 
     @Unroll
@@ -71,7 +71,7 @@ class SpectatorMetricsHandlerInterceptorSpec extends Specification {
 
 @Configuration
 @EnableWebMvc
-@ImportAutoConfiguration([SpectatorMetricsAutoConfiguration, PropertyPlaceholderAutoConfiguration])
+@ImportAutoConfiguration([SpectatorAutoConfiguration, PropertyPlaceholderAutoConfiguration])
 class SpectatorTestConfig {
     @Bean
     SpectatorTestController testController() {

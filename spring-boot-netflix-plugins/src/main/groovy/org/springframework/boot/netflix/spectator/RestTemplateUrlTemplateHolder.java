@@ -1,17 +1,16 @@
-package org.springframework.boot.netflix.spectator
+package org.springframework.boot.netflix.spectator;
 
-import org.springframework.core.NamedThreadLocal
+import org.springframework.core.NamedThreadLocal;
 
-class RestTemplateUrlTemplateHolder {
-	
+public class RestTemplateUrlTemplateHolder {
 	private static final ThreadLocal<String> restTemplateUrlTemplateHolder =
-	new NamedThreadLocal<String>("Rest Template URL Template");
+		new NamedThreadLocal<String>("Rest Template URL Template");
 	
 	public static void setRestTemplateUrlTemplate(String urlTemplate) {
 		restTemplateUrlTemplateHolder.set(urlTemplate);
 	}
 	
-	public static String getRestTempalteUrlTemplate() {
+	public static String getRestTemplateUrlTemplate() {
 		return restTemplateUrlTemplateHolder.get();
 	}
 	

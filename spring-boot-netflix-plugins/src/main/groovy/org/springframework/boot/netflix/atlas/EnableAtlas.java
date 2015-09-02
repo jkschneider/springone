@@ -1,6 +1,6 @@
-package org.springframework.boot.netflix.atlas
+package org.springframework.boot.netflix.atlas;
 
-import java.lang.annotation.*
+import java.lang.annotation.*;
 
 /**
  * Annotation for clients to enable Atlas metrics publishing.

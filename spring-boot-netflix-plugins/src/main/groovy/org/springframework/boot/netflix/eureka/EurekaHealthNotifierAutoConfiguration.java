@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import com.netflix.discovery.EurekaClient;
 
 @Configuration
-@ConditionalOnBean([EurekaClient, HealthAggregator])
+@ConditionalOnBean({EurekaClient.class, HealthAggregator.class})
 public class EurekaHealthNotifierAutoConfiguration {
 
 	@Bean

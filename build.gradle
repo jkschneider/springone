@@ -10,8 +10,10 @@ subprojects {
     apply plugin: 'groovy'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'optional-base'
-    targetCompatibility = '8'
-    sourceCompatibility = '8'
+
+    targetCompatibility = '1.8'
+    sourceCompatibility = '1.8'
+
     dependencyManagement {
         imports {
             mavenBom 'org.springframework.cloud:spring-cloud-netflix:1.1.0.BUILD-SNAPSHOT'
@@ -21,6 +23,10 @@ subprojects {
     repositories {
         jcenter()
         maven { url 'http://repo.spring.io/snapshot' }
+    }
+
+    configurations.all {
+        exclude module: 'groovy-all'
     }
 
     dependencies {

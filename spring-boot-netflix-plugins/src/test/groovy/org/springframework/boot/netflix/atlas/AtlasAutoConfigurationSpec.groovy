@@ -63,7 +63,7 @@ class AtlasAutoConfigurationSpec extends Specification {
 
         when:
         1000.times { t.record(100, TimeUnit.MILLISECONDS) }
-        Thread.sleep(1000)
+        Thread.sleep(1500)
 
         then:
         publishCount.get() == 1

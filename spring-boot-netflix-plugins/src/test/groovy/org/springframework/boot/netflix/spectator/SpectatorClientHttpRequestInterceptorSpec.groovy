@@ -23,40 +23,35 @@ import com.netflix.spectator.api.DefaultRegistry
 import com.netflix.spectator.api.Registry
 
 @ContextConfiguration(classes = SpectatorRestTemplateTestConfig)
-@TestPropertySource(properties = ['netflix.spectator.restClient.metricName=metricName', 'spring.aop.proxy-target-class=true'])
-class SpectatorRestTemplateLoggingSpec extends Specification {
-
+@TestPropertySource(properties = [
+    'netflix.spectator.restClient.metricName=metricName',
+    'spring.aop.proxy-target-class=true'
+])
+class SpectatorClientHttpRequestInterceptorSpec extends Specification {
     @Autowired Registry registry
 	@Autowired RestTemplate restTemplate
 
     @Unroll
-    def 'metrics gathered when #name'() {
+    def 'metrics gathered when successful'() {
         given:
         def mockServer = MockRestServiceServer.createServer(restTemplate)
 
         when:
-		mockServer.expect(requestTo("/test/123")).andExpect(method(HttpMethod.GET))
-		.andRespond(withSuccess("{ \"status\" : \"OK\"}", MediaType.APPLICATION_JSON));
+		mockServer.expect(requestTo('/test/123')).andExpect(method(HttpMethod.GET))
+		    .andRespond(withSuccess('{"status" : "OK"}', MediaType.APPLICATION_JSON))
 		
-		restTemplate.getForObject("/test/{id}", String, 123)
+		restTemplate.getForObject('/test/{id}', String, 123)
 		
         then:
-		registry.timer('metricName', 'method', 'GET', 'uri', uriTag, 'status', status as String, 'clientName', clientName).count() == 1
+		registry.timer('metricName', 'method', 'GET', 'uri', '_test_-id-', 'status', '200', 'clientName', 'none')
+                .count() == 1
 		mockServer.verify()
-
-        where:
-        name          |	status
-        'successful'  |	200
-      
-        uriTag = "_test_-id-"
-		clientName = "Unknown"
     }
 }
 
 @Configuration
-@ImportAutoConfiguration([SpectatorRestTemplateInterceptorAutoConfiguration, PropertyPlaceholderAutoConfiguration, AopAutoConfiguration])
+@ImportAutoConfiguration([SpectatorAutoConfiguration, PropertyPlaceholderAutoConfiguration, AopAutoConfiguration])
 class SpectatorRestTemplateTestConfig {
-	
 	@Bean
 	RestTemplate restTemplate() {
 		new RestTemplate()

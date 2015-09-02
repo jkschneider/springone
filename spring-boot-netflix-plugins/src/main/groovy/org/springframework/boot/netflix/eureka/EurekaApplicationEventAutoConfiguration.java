@@ -8,15 +8,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.netflix.discovery.EurekaClient;
 
 @Configuration
-@ConditionalOnBean(EurekaClient)
+@ConditionalOnBean(EurekaClient.class)
 @EnableScheduling
 public class EurekaApplicationEventAutoConfiguration {
-	
 	@Bean
 	public EurekaStatusApplicationEventPublisher eurekaStatusApplicationEventPublisher(){
 		return new EurekaStatusApplicationEventPublisher();
 	}
-	
 }
 
 
