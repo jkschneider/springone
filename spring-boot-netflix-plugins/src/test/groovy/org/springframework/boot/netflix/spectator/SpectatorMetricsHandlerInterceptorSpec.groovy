@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @ContextConfiguration(classes = SpectatorTestConfig)
 @WebAppConfiguration
-@TestPropertySource(properties = 'spring.application.name=appName')
+@TestPropertySource(properties = 'netflix.spectator.rest.metricName=metricName')
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class SpectatorMetricsHandlerInterceptorSpec extends Specification {
     @Autowired WebApplicationContext webAppContext
@@ -54,7 +54,7 @@ class SpectatorMetricsHandlerInterceptorSpec extends Specification {
         } catch(e) {}
 
         then:
-        registry.timer('appName', 'method', 'GET', 'uri', uriTag, 'caller', 'unknown',
+        registry.timer('metricName', 'method', 'GET', 'uri', uriTag, 'caller', 'unknown',
                 'exceptionType', exceptionType, 'status', status as String).count() == 1
 
         where:

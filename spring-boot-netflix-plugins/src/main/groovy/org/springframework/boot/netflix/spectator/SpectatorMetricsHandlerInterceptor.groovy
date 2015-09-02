@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST
 
 class SpectatorMetricsHandlerInterceptor extends HandlerInterceptorAdapter {
-    @Value('${netflix.spectator:rest}')
+    @Value('${netflix.spectator.rest.metricName:rest}')
     String metricName
 
-    @Value('${netflix.spectator.callerHeader:#{null}}')
+    @Value('${netflix.spectator.rest.callerHeader:#{null}}')
     String callerHeader
 
     @Autowired

@@ -19,7 +19,7 @@ public class SpectatorLoggingClientHttpRequestInterceptor implements ClientHttpR
 	@Autowired
 	Registry registry
 	
-	@Value('${netflix.spectator.restClient.metricName:RESTCLIENT}')
+	@Value('${netflix.spectator.restClient.metricName:restclient}')
 	String metricName
 
 	@Override

@@ -3,7 +3,7 @@ package org.springframework.boot.netflix.atlas
 import java.lang.annotation.*
 
 /**
- * Convenience annotation for clients to enable Atlas metric collection.
+ * Annotation for clients to enable Atlas metrics publishing.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
