@@ -4,4 +4,6 @@ dependencies {
     compile 'org.springframework.cloud:spring-cloud-starter-eureka'
     compile 'javax.inject:javax.inject:1'
     compile 'org.codehaus.groovy:groovy:latest.release'
+
+    compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
 }

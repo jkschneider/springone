@@ -29,12 +29,16 @@ class Membership {
 @Canonical
 class Member {
     String user
+    Integer age
 }
 
 @RestController
 @RequestMapping('/api/member')
 class MembershipController {
-    Map<String, Member> memberStore = [:]
+    Map<String, Member> memberStore = [
+        jschneider: new Member('jschneider', 10),
+        twicksell: new Member('twicksell', 30)
+    ]
 
     @RequestMapping(method = RequestMethod.POST)
     Member register(@RequestBody Member member) {
