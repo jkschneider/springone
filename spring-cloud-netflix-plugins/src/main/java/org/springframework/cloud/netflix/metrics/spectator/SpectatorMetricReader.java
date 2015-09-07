@@ -1,15 +1,14 @@
 package org.springframework.cloud.netflix.metrics.spectator;
 
 import com.netflix.spectator.api.Id;
-import com.netflix.spectator.api.Measurement;
-import com.netflix.spectator.api.Meter;
 import com.netflix.spectator.api.Registry;
 import org.springframework.boot.actuate.metrics.Metric;
 import org.springframework.boot.actuate.metrics.reader.MetricReader;
 import org.springframework.lang.UsesJava8;
 
 import java.util.stream.Collectors;
-import static java.util.stream.StreamSupport.*;
+
+import static java.util.stream.StreamSupport.stream;
 
 @UsesJava8
 public class SpectatorMetricReader implements MetricReader {
@@ -27,20 +26,16 @@ public class SpectatorMetricReader implements MetricReader {
     @Override
     public Iterable<Metric<?>> findAll() {
         return stream(registry.spliterator(), false)
-                .map(SpectatorMetricReader::asMetric)
+                .flatMap(metric -> stream(metric.measure().spliterator(), false)
+                        .map(measure -> new Metric<>(asHierarchicalName(measure.id()), measure.value())))
+                .sorted((m1, m2) -> m1.getName().compareTo(m2.getName()))
                 .collect(Collectors.toList());
     }
 
-    protected static Metric<?> asMetric(Meter meter) {
-        Measurement lastMeasurement = stream(meter.measure().spliterator(), false)
-                .reduce(null, (m1, m2) -> m2);
-        return new Metric<>(asHierarchicalName(meter.id()), lastMeasurement.value());
-    }
-
     protected static String asHierarchicalName(Id id) {
-        return id.name() + stream(id.tags().spliterator(), false)
-                .map(t -> t.key() + "=" + t.value())
-                .reduce("", (acc, tag) -> acc + "." + tag);
+        return id.name() + "(" + String.join(",", stream(id.tags().spliterator(), false)
+                    .map(t -> t.key() + "=" + t.value())
+                    .collect(Collectors.toList())) + ")";
     }
 
     @Override

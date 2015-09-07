@@ -26,9 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Periodically polls registered Servo monitors
- */
 @Configuration
 @ConditionalOnClass(AtlasMetricObserver.class)
 @Import(SpectatorAutoConfiguration.class)
