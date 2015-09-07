@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.atlas
+package org.springframework.cloud.netflix.metrics.atlas
 
 import com.netflix.spectator.api.Registry
 import com.netflix.spectator.servo.ServoRegistry
@@ -12,12 +12,17 @@ import org.littleshoot.proxy.HttpFilters
 import org.littleshoot.proxy.HttpFiltersAdapter
 import org.littleshoot.proxy.HttpFiltersSourceAdapter
 import org.littleshoot.proxy.impl.DefaultHttpProxyServer
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Configurable
+import org.springframework.boot.actuate.metrics.export.Exporter
 import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
 import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration
 import org.springframework.boot.autoconfigure.test.ImportAutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableScheduling
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.web.WebAppConfiguration
@@ -27,51 +32,32 @@ import spock.lang.Specification
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
-@ContextConfiguration(classes = AtlasTestConfig)
+@ContextConfiguration(classes = [AtlasTestConfig])
 @WebAppConfiguration
-@TestPropertySource(properties = [
-    'spring.application.name=appName',
-    'netflix.atlas.uri=http://localhost:7102/api/v1/publish',
-    'netflix.atlas.pollingInterval=1000'
-])
+@TestPropertySource(properties = ['netflix.atlas.uri=http://localhost:7102/api/v1/publish'])
 class AtlasAutoConfigurationSpec extends Specification {
     @Autowired
     Registry registry
 
+    @Autowired
+    Exporter exporter
+
     def 'test metrics are sent to Atlas periodically'() {
         setup:
-        def publishCount = new AtomicInteger(0)
-
-        DefaultHttpProxyServer.bootstrap()
-            .withPort(7102)
-            .withFiltersSource(new HttpFiltersSourceAdapter() {
-                @Override
-                HttpFilters filterRequest(HttpRequest originalRequest) {
-                    new HttpFiltersAdapter(originalRequest) {
-                        @Override
-                        HttpResponse clientToProxyRequest(HttpObject httpObject) {
-                            assert ((HttpRequest) httpObject).uri == '/api/v1/publish'
-                            publishCount.incrementAndGet()
-                            new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK)
-                        }
-                    }
-                }
-            })
-            .start()
-
-        def t = registry.timer('t', 'appName', 'test')
+        def t = registry.timer('t')
 
         when:
         1000.times { t.record(100, TimeUnit.MILLISECONDS) }
         Thread.sleep(1500)
 
         then:
-        publishCount.get() == 1
+        Mockito.verify(exporter, Mockito.atLeastOnce()).export()
     }
 }
 
 @Configuration
 @EnableWebMvc
+@EnableScheduling
 @ImportAutoConfiguration([
     AtlasAutoConfiguration,
     PropertyPlaceholderAutoConfiguration,
@@ -79,7 +65,15 @@ class AtlasAutoConfigurationSpec extends Specification {
 ])
 class AtlasTestConfig {
     @Bean
-    ServoRegistry registry() {
-        new ServoRegistry() // this is a Monitor implementation
+    Exporter exporter() {
+        Mockito.mock(Exporter)
+    }
+
+    @Autowired
+    Exporter exporter
+
+    @Scheduled(fixedRate = 1000L)
+    void pushMetricsToAtlas() {
+        exporter.export()
     }
 }

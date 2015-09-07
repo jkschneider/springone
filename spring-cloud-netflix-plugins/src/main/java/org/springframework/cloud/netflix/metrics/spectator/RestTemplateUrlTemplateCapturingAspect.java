@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.spectator;
+package org.springframework.cloud.netflix.metrics.spectator;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

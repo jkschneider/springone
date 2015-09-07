@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.spectator;
+package org.springframework.cloud.netflix.metrics.spectator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

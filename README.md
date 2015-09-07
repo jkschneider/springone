@@ -14,3 +14,15 @@ To login:
 
 /api/member/{jschneider} => {"customerId": "jschneider", "age": "10"}
 /api/member/{jschneider} => {"customerId": "jschneider", "age": "30"}
+
+# Spring Boot Metric Writer
+
+Wrap the registry and intercept to add common metrics so we can swap out metrics backends
+
+https://github.com/spinnaker/kork/blob/master/kork-core/src/main/java/com/netflix/spinnaker/kork/metrics/SpectatorConfiguration.java
+
+
+meter -> counter
+histogram -> distribution summary
+timer -> timer
+everything else -> gauge

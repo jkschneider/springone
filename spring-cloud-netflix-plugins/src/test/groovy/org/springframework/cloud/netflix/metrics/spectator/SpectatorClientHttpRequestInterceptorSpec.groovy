@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.spectator
+package org.springframework.cloud.netflix.metrics.spectator
 
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import static org.springframework.test.web.client.response.MockRestResponseCreators.*

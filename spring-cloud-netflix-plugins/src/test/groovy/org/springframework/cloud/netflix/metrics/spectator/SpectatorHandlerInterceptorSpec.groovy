@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.spectator
+package org.springframework.cloud.netflix.metrics.spectator
 
 import com.netflix.spectator.api.DefaultRegistry
 import com.netflix.spectator.api.Registry

@@ -2,8 +2,8 @@ org.springframework.cloud.netflix.eureka.EnableEurekaClient=\
 org.springframework.cloud.netflix.eureka.EurekaApplicationEventAutoConfiguration
 org.springframework.cloud.netflix.eureka.EurekaHealthNotifierAutoConfiguration
 
-org.springframework.cloud.netflix.spectator.EnableSpectator=\
-org.springframework.cloud.netflix.spectator.SpectatorAutoConfiguration
+org.springframework.cloud.netflix.metrics.spectator.EnableSpectator=\
+org.springframework.cloud.netflix.metrics.spectator.SpectatorAutoConfiguration
 
-org.springframework.cloud.netflix.atlas.EnableAtlas=\
-org.springframework.cloud.netflix.atlas.AtlasAutoConfiguration
+org.springframework.cloud.netflix.metrics.atlas.EnableAtlas=\
+org.springframework.cloud.netflix.metrics.atlas.AtlasAutoConfiguration

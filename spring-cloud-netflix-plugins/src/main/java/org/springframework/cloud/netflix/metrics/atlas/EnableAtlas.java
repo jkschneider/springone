@@ -1,4 +1,4 @@
-package org.springframework.cloud.netflix.atlas;
+package org.springframework.cloud.netflix.metrics.atlas;
 
 import java.lang.annotation.*;
 
