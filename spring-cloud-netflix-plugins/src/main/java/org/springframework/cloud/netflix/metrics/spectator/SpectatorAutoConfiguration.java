@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 @AutoConfigureBefore(MetricRepositoryAutoConfiguration.class)
-public class SpectatorAutoConfiguration extends WebMvcConfigurerAdapter {
+public class SpectatorAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(Registry.class)
     Registry registry() {
@@ -33,49 +33,54 @@ public class SpectatorAutoConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    @ConditionalOnWebApplication
-    SpectatorHandlerInterceptor spectatorMonitoringWebResourceInterceptor() {
-        return new SpectatorHandlerInterceptor();
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(spectatorMonitoringWebResourceInterceptor());
-    }
-
-    @Bean
-    @ConditionalOnBean({RestTemplate.class, AopAutoConfiguration.CglibAutoProxyConfiguration.class})
-    RestTemplateUrlTemplateCapturingAspect restTemplateUrlTemplateCapturingAspect() {
-        return new RestTemplateUrlTemplateCapturingAspect();
-    }
-
-    @Bean
-    @ConditionalOnBean(RestTemplate.class)
-    SpectatorClientHttpRequestInterceptor spectatorLoggingClientHttpRequestInterceptor() {
-        return new SpectatorClientHttpRequestInterceptor();
-    }
-
-    @Bean
-    @ConditionalOnBean(SpectatorClientHttpRequestInterceptor.class)
-    BeanPostProcessor spectatorRestTemplateInterceptorPostProcessor(SpectatorClientHttpRequestInterceptor interceptor) {
-        return new BeanPostProcessor() {
-            @Override
-            public Object postProcessBeforeInitialization(Object bean, String beanName) {
-                return bean;
-            }
-
-            @Override
-            public Object postProcessAfterInitialization(Object bean, String beanName) {
-                if (bean instanceof RestTemplate)
-                    ((RestTemplate) bean).getInterceptors().add(interceptor);
-                return bean;
-            }
-        };
-    }
-
-    @Bean
+    @ConditionalOnMissingBean(MetricPoller.class)
     MetricPoller metricPoller() {
         return new MonitorRegistryMetricPoller();
+    }
+
+    @Configuration
+    @ConditionalOnWebApplication
+    static class SpectatorWebResourceConfiguration extends WebMvcConfigurerAdapter {
+        @Bean
+        SpectatorHandlerInterceptor spectatorMonitoringWebResourceInterceptor() {
+            return new SpectatorHandlerInterceptor();
+        }
+
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(spectatorMonitoringWebResourceInterceptor());
+        }
+    }
+
+    @Configuration
+    @ConditionalOnBean({RestTemplate.class, AopAutoConfiguration.CglibAutoProxyConfiguration.class})
+    static class SpectatorRestTemplateConfiguration {
+        @Bean
+        RestTemplateUrlTemplateCapturingAspect restTemplateUrlTemplateCapturingAspect() {
+            return new RestTemplateUrlTemplateCapturingAspect();
+        }
+
+        @Bean
+        SpectatorClientHttpRequestInterceptor spectatorLoggingClientHttpRequestInterceptor() {
+            return new SpectatorClientHttpRequestInterceptor();
+        }
+
+        @Bean
+        BeanPostProcessor spectatorRestTemplateInterceptorPostProcessor(SpectatorClientHttpRequestInterceptor interceptor) {
+            return new BeanPostProcessor() {
+                @Override
+                public Object postProcessBeforeInitialization(Object bean, String beanName) {
+                    return bean;
+                }
+
+                @Override
+                public Object postProcessAfterInitialization(Object bean, String beanName) {
+                    if (bean instanceof RestTemplate)
+                        ((RestTemplate) bean).getInterceptors().add(interceptor);
+                    return bean;
+                }
+            };
+        }
     }
 
     // TODO why is @AutoConfigureBefore not preventing the default CounterService from registering like it does for MetricsDropwizardAutoConfiguration?
