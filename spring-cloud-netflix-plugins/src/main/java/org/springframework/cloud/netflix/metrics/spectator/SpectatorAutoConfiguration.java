@@ -2,9 +2,7 @@ package org.springframework.cloud.netflix.metrics.spectator;
 
 import com.netflix.servo.publish.MetricPoller;
 import com.netflix.servo.publish.MonitorRegistryMetricPoller;
-import com.netflix.spectator.api.CompositeRegistry;
 import com.netflix.spectator.api.Registry;
-import com.netflix.spectator.api.Spectator;
 import com.netflix.spectator.servo.ServoRegistry;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
@@ -28,12 +26,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 @AutoConfigureBefore(MetricRepositoryAutoConfiguration.class)
 public class SpectatorAutoConfiguration extends WebMvcConfigurerAdapter {
-    @Primary
     @Bean
+    @ConditionalOnMissingBean(Registry.class)
     Registry registry() {
-        CompositeRegistry r = Spectator.globalRegistry();
-        r.add(new ServoRegistry());
-        return r;
+        return new ServoRegistry();
     }
 
     @Bean

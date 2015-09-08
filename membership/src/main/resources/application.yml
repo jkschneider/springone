@@ -1,5 +1,6 @@
 spring:
   application.name: membership
+  autoconfigure.exclude: org.springframework.cloud.netflix.servo.ServoMetricsAutoConfiguration
 security.basic.enabled: false
 netflix:
   appinfo.name: ${spring.application.name}
