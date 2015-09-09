@@ -7,6 +7,8 @@ dependencies {
 	compile 'org.springframework.boot:spring-boot-starter-aop'
 
 	compile 'org.springframework.cloud:spring-cloud-starter-eureka', optional
+	compile 'org.springframework.boot:spring-boot-starter-integration', optional
+	compile 'org.springframework.integration:spring-integration-java-dsl', optional
 	compile 'com.netflix.spectator:spectator-api:0.30.0', optional
     compile 'com.netflix.spectator:spectator-reg-servo:0.30.0', optional
     compile 'com.netflix.servo:servo-atlas:0.11.2', optional
