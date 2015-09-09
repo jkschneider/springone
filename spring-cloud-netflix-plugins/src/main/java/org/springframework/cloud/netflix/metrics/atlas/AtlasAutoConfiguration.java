@@ -49,7 +49,7 @@ public class AtlasAutoConfiguration implements ServoAtlasConfig {
     @Bean
     @ConditionalOnMissingBean(AtlasMetricObserver.class)
     public AtlasMetricObserver atlasObserver() {
-        BasicTagList tags = BasicTagList.copyOf(Collections.emptyList());
+        BasicTagList tags = (BasicTagList) BasicTagList.EMPTY;
         if(tagProviders != null) {
             for (AtlasTagProvider tagProvider : tagProviders) {
                 for (Map.Entry<String, String> tag : tagProvider.defaultTags().entrySet()) {

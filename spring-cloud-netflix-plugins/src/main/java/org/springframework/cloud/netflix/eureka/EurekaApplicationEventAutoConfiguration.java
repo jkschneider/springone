@@ -16,6 +16,3 @@ public class EurekaApplicationEventAutoConfiguration {
 		return new EurekaStatusApplicationEventPublisher();
 	}
 }
-
-
-
