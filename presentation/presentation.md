@@ -23,8 +23,11 @@ the load balancer needs to have a route registered with it.
 # Add Eureka
 
 * Start Eureka with eureka module main method
+* Add `compile 'org.springframework.cloud:spring-cloud-starter-eureka'`
+* Add `eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka/` to application.yml
 * Add `@EnableEurekaClient`
-* Start Membership and Recommendations
+* Remove RestTemplate bean
+* Start Recommendations
 * Execute REST request to drop the Membership instance from discovery
 * [Eureka REST Operations](https://github.com/Netflix/eureka/wiki/Eureka-REST-operations)
 
@@ -53,10 +56,47 @@ the load balancer needs to have a route registered with it.
 
 ---
 
-# What about Zuul
+# Feign Client
 
-* Our premise has been that client-side load balancing is an architectural alternative to the typical load-balancer-per-server model.  Ribbon+Eureka folds load balancing into the service call itself.
-* So why Zuul, a router distinct from the operation of any particular service?
+* Somewhat simplifies the repository
+* Add `compile 'org.springframework.cloud:spring-cloud-starter-feign'`
+* Add `@EnableFeignClients`
+* Add:
+```java
+@FeignClient("membership")
+interface MembershipRepository {
+    @RequestMapping(method = RequestMethod.GET, value = "/api/member/{user}")
+    Member findMember(@PathVariable("user") String user);
+}
+```
+
+---
+
+# Hystrix
+
+* Add `compile 'org.springframework.cloud:spring-cloud-starter-hystrix'`
+* Add `@EnableHystrix`
+* Add `Set<Movie> familyRecommendations = Sets.newHashSet(new Movie("hook"), new Movie("the sandlot"));`
+* Add `@HystrixCommand(fallbackMethod = "recommendationFallback")` METHOD MUST BE PUBLIC!!
+* Add `@EnableHystrixDashboard`
+* Add:
+```java
+/**
+ * Should be safe for all audiences
+ */
+Set<Movie> recommendationFallback(String user) {
+    return familyRecommendations;
+}
+```
+
+---
+
+# Turbine
+
+* Start Turbine
+* Remove `@EnableHystrixDashboard`
+* Wire hystrix commands to Turbine
+* Demo centralized circuit breaker in Turbine
 
 ---
 
@@ -94,17 +134,7 @@ consisting of `{uri}.200`.  Would have to first itemize all such `{uri}`.
 
 ---
 
-# Hystrix
+# What about Zuul
 
-* Add `@EnableHystrix`
-* Add a HystrixCommand to allow recommendations to fall back when the Membership service is down
-* Add `@EnableHystrixDashboard`
-
----
-
-# Turbine
-
-* Start Turbine
-* Remove `@EnableHystrixDashboard`
-* Wire hystrix commands to Turbine
-* Demo centralized circuit breaker in Turbine
+* Our premise has been that client-side load balancing is an architectural alternative to the typical load-balancer-per-server model.  Ribbon+Eureka folds load balancing into the service call itself.
+* So why Zuul, a router distinct from the operation of any particular service?
