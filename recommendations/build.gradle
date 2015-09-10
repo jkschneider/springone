@@ -2,8 +2,10 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.cloud:spring-cloud-starter-eureka'
+    compile 'org.springframework.cloud:spring-cloud-starter-feign'
     compile 'javax.inject:javax.inject:1'
-    compile 'org.codehaus.groovy:groovy:latest.release'
+    compile 'org.projectlombok:lombok:latest.release'
+    compile 'com.google.guava:guava:latest.release'
 
     compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
 }
