@@ -1,2 +1,4 @@
 rootProject.name = 'springone'
 include 'membership', 'recommendations', 'eureka', 'spring-cloud-netflix-plugins'
+include 'hystrix-dashboard'
+
