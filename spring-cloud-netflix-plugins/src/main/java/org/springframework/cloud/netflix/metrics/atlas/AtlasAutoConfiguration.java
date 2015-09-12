@@ -1,30 +1,28 @@
 package org.springframework.cloud.netflix.metrics.atlas;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.validation.constraints.NotNull;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.metrics.export.Exporter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.cloud.netflix.metrics.spectator.SpectatorAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.frigga.Names;
 import com.netflix.servo.publish.MetricPoller;
 import com.netflix.servo.publish.atlas.AtlasMetricObserver;
 import com.netflix.servo.publish.atlas.ServoAtlasConfig;
 import com.netflix.servo.tag.BasicTagList;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.metrics.export.Exporter;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cloud.netflix.metrics.spectator.EnableSpectator;
-import org.springframework.cloud.netflix.metrics.spectator.SpectatorAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-
-import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 @ConditionalOnClass(AtlasMetricObserver.class)
@@ -77,14 +75,8 @@ public class AtlasAutoConfiguration implements ServoAtlasConfig {
         public AtlasTagProvider instanceInfoTags() {
             return () -> {
                 Map<String, String> tags = new HashMap<>();
-                tags.put("nf.app", instanceInfo.getAppName());
-                tags.put("nf.cluster", Names.parseName(instanceInfo.getASGName()).getCluster());
-//        tags.put("nf.ami", instanceInfo.get)
-//        tags.put("nf.node", instanceInfo.get); // instance id
-//        tags.put("nf.region")
-//        tags.put("nf.zone")
-//        tags.put("nf.vmtype")
-
+                tags.put("appName", instanceInfo.getAppName());
+                tags.put("cluster", Names.parseName(instanceInfo.getASGName()).getCluster());
                 return tags;
             };
         }
