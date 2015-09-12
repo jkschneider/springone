@@ -1,12 +1,10 @@
 package com.netflix.recommendations;
 
-import com.google.common.collect.Sets;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
@@ -18,10 +16,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.servlet.HandlerMapping;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Set;
+import com.google.common.collect.Sets;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @SpringBootApplication
 @EnableCircuitBreaker
@@ -59,6 +64,7 @@ class RecommendationsController {
 
     @RequestMapping("/{user}")
     Set<Movie> recommendations(@PathVariable String user) {
+//    	String mapping = (String) RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         return repository.findRecommendationsForUser(user);
     }
 
@@ -83,8 +89,11 @@ class RecommendationsRepository {
     Set<Movie> adultRecommendations = Sets.newHashSet(new Movie("shawshank redemption"), new Movie("spring"));
     Set<Movie> familyRecommendations = Sets.newHashSet(new Movie("hook"), new Movie("the sandlot"));
 
-    @HystrixCommand(fallbackMethod = "recommendationFallback", commandProperties=@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "100"))
+    @HystrixCommand(fallbackMethod = "recommendationFallback", commandProperties={
+//    		   	@HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"),
+    			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "100")})
     public Set<Movie> findRecommendationsForUser(String user) {
+//       	String mapping = (String) RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
         Member member = rest.getForObject("http://membership/api/member/{user}", Member.class, user);
         return member.age < 17 ? kidRecommendations : adultRecommendations;
     }

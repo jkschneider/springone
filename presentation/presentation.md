@@ -88,6 +88,9 @@ Set<Movie> recommendationFallback(String user) {
     return familyRecommendations;
 }
 ```
+* Add: `commandProperties={@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "100")}`
+* Add: `String mapping = (String) RequestContextHolder.currentRequestAttributes().getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);`
+* Add: `@HystrixProperty(name = "execution.isolation.strategy", value = "SEMAPHORE"),`
 
 ---
 
