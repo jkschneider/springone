@@ -2,6 +2,8 @@ package com.netflix.recommendations;
 
 import com.google.common.collect.Sets;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -81,8 +83,8 @@ class RecommendationsRepository {
     Set<Movie> adultRecommendations = Sets.newHashSet(new Movie("shawshank redemption"), new Movie("spring"));
     Set<Movie> familyRecommendations = Sets.newHashSet(new Movie("hook"), new Movie("the sandlot"));
 
-    @HystrixCommand(fallbackMethod = "recommendationFallback")
-    Set<Movie> findRecommendationsForUser(String user) {
+    @HystrixCommand(fallbackMethod = "recommendationFallback", commandProperties=@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "100"))
+    public Set<Movie> findRecommendationsForUser(String user) {
         Member member = rest.getForObject("http://membership/api/member/{user}", Member.class, user);
         return member.age < 17 ? kidRecommendations : adultRecommendations;
     }
