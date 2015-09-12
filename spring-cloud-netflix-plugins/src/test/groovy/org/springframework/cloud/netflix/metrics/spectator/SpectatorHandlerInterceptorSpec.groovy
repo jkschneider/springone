@@ -54,15 +54,15 @@ class SpectatorMetricsHandlerInterceptorSpec extends Specification {
         } catch(e) {}
 
         then:
-        registry.timer('metricName', 'method', 'GET', 'uri', uriTag, 'caller', 'unknown',
+        registry.timer('metricName', 'method', 'GET', 'uri', uriTag, 'handlerName', handlerName, 'caller', 'unknown',
                 'exceptionType', exceptionType, 'status', status as String, 'bucket', '01s').count() == 1
 
         where:
-        name                     | endpoint             | id     | exceptionType       | status
-        'successful'             | 'request'            | '10'   | 'none'              | 200
-        'client request bad'     | 'request'            | 'oops' | 'none'              | 400
-        'handled error occurs'   | 'error'              | '10'   | 'none'              | 422
-        'unhandled error occurs' | 'unhandledError'     | '10'   | 'RuntimeException'  | 200
+        name                     | endpoint             | id     | exceptionType       | status | handlerName
+        'successful'             | 'request'            | '10'   | 'none'              | 200	| 'testSomeRequest'
+        'client request bad'     | 'request'            | 'oops' | 'none'              | 400	| 'testSomeRequest'
+        'handled error occurs'   | 'error'              | '10'   | 'none'              | 422  	| 'testSomeHandledError'
+        'unhandled error occurs' | 'unhandledError'     | '10'   | 'RuntimeException'  | 200	| 'testSomeUnhandledError'
 
         uri = "/test/some/$endpoint/$id"
         uriTag = "test_some_${endpoint}_-id-"

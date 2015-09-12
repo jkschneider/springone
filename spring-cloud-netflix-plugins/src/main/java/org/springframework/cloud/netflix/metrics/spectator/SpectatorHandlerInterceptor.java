@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -62,6 +63,7 @@ public class SpectatorHandlerInterceptor extends HandlerInterceptorAdapter {
         Id timerId = registry.createId(metricName,
                 "method", request.getMethod(),
                 "uri", uri.isEmpty() ? "root" : uri,
+                "handlerName", handler instanceof HandlerMethod ? ((HandlerMethod)handler).getMethod().getName() : "unknown",
                 "caller", caller != null ? caller : "unknown",
                 "exceptionType", exception != null ? exception.getClass().getSimpleName() : "none",
                 "status", ((Integer) response.getStatus()).toString());
