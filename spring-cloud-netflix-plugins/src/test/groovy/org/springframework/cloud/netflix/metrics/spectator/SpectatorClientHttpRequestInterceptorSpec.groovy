@@ -43,7 +43,7 @@ class SpectatorClientHttpRequestInterceptorSpec extends Specification {
 		restTemplate.getForObject('/test/{id}', String, 123)
 		
         then:
-		registry.timer('metricName', 'method', 'GET', 'uri', '_test_-id-', 'status', '200', 'clientName', 'none')
+		registry.timer('metricName', 'method', 'GET', 'uri', '_test_-id-', 'status', '200', 'clientName', 'none', 'bucket', '01s')
                 .count() == 1
 		mockServer.verify()
     }

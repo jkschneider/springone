@@ -55,7 +55,7 @@ class SpectatorMetricsHandlerInterceptorSpec extends Specification {
 
         then:
         registry.timer('metricName', 'method', 'GET', 'uri', uriTag, 'caller', 'unknown',
-                'exceptionType', exceptionType, 'status', status as String).count() == 1
+                'exceptionType', exceptionType, 'status', status as String, 'bucket', '01s').count() == 1
 
         where:
         name                     | endpoint             | id     | exceptionType       | status

@@ -1,6 +1,11 @@
 package org.springframework.cloud.netflix.metrics.spectator;
 
+import com.netflix.spectator.api.Id;
 import com.netflix.spectator.api.Registry;
+import com.netflix.spectator.sandbox.BucketFunction;
+import com.netflix.spectator.sandbox.BucketFunctions;
+import com.netflix.spectator.sandbox.BucketTimer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpRequest;
@@ -17,6 +22,9 @@ public class SpectatorClientHttpRequestInterceptor implements ClientHttpRequestI
 
     @Value("${netflix.spectator.restClient.metricName:restclient}")
     String metricName;
+    
+    @Value("${netflix.spectator.restClient.maxAge:10000}")
+    Long maxAge;
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
@@ -25,7 +33,7 @@ public class SpectatorClientHttpRequestInterceptor implements ClientHttpRequestI
         if(urlTemplate == null)
             urlTemplate = "none";
 
-        long startTime = registry.clock().wallTime();
+        long startTime = registry.clock().monotonicTime();
         String status = "CLIENT_ERROR";
         try {
             ClientHttpResponse response = execution.execute(request, body);
@@ -35,12 +43,16 @@ public class SpectatorClientHttpRequestInterceptor implements ClientHttpRequestI
         finally {
             String host = request.getURI().getHost();
 
-            registry.timer(metricName,
+            Id timerId = registry.createId(metricName,
                     "method", request.getMethod().name(),
                     "uri", urlTemplate.replaceAll("^https?://[^/]+/", "").replaceAll("/", "_").replaceAll("[{}]", "-"),
                     "status", status,
                     "clientName", host != null ? host : "none"
-            ).record(registry.clock().wallTime() - startTime, TimeUnit.MILLISECONDS);
+            );
+            
+            BucketFunction f = BucketFunctions.latency(maxAge, TimeUnit.MILLISECONDS);
+            BucketTimer t = BucketTimer.get(registry, timerId, f);
+            t.record(registry.clock().monotonicTime() - startTime, TimeUnit.NANOSECONDS);
         }
     }
 }
