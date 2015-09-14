@@ -1,0 +1,38 @@
+buildscript {
+	repositories {
+        maven { url 'http://repo.spring.io/plugins-release' }
+	}
+	dependencies {
+		classpath("org.springframework.xd:spring-xd-module-plugin:1.1.0.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE") 
+	}
+}
+
+repositories {
+	jcenter()
+	maven { url 'http://repo.spring.io/snapshot' }
+}
+
+ext {
+	springIntegrationVersion='4.1.6.RELEASE'
+	springXdVersion = '1.2.1.RELEASE'
+	hadoopVersion = '2.6.0'
+	
+}
+
+apply plugin: 'spring-xd-module'
+startScripts.enabled = false
+dependencies {
+	compile 'com.sun.jersey:jersey-core:1.19'
+	compile 'com.sun.jersey:jersey-client:1.19'
+	compile 'com.sun.jersey.contribs:jersey-apache-client4:1.19'
+	compile 'com.netflix.eureka:eureka-client:1.1.142'
+	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.4.5'
+//	compile 'org.springframework.boot:spring-boot-starter-web:1.2.5.RELEASE'
+	compile 'org.springframework.cloud:spring-cloud-starter-eureka:1.0.4.BUILD-SNAPSHOT'
+	compile 'org.springframework.cloud:spring-cloud-starter-ribbon:1.0.4.BUILD-SNAPSHOT'
+	compile 'org.springframework.integration:spring-integration-http:4.1.6.RELEASE'
+	compile 'org.springframework.xd:spring-xd-extension-http:1.0.4.RELEASE'
+	compile 'org.springframework.integration:spring-integration-java-dsl:1.0.1.RELEASE'
+	
+}
